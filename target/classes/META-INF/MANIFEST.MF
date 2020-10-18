@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Built-By: willi
+Build-Jdk: 11.0.7
+Main-Class: br.com.br.botecoHaoba.Main
+Created-By: Maven Integration for Eclipse
+
