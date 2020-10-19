@@ -2,7 +2,6 @@ package br.com.botecoHaoba.model.facade;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.botecoHaoba.model.entidades.Comanda;
 
 public class BotecoFacade {
@@ -10,10 +9,6 @@ public class BotecoFacade {
 	private List<Comanda> comandas = new ArrayList<Comanda>();
 
 	public void addComanda(Comanda comanda) {
-		for (int i = 0; i > comandas.toArray().length; i++) {
-			System.out.println((comandas.get(i).getMesa() * 2) / 2);
-		}
-
 		verificaMesa(comanda);
 		calculaValorTotal(comanda);
 		calculaValorComissao(comanda);
@@ -31,13 +26,61 @@ public class BotecoFacade {
 	}
 
 	public void calculaValorTotal(Comanda comanda) {
-
-		comanda.setValorTotal(0);
+		double valor = 0;
+		if (comandas.size() >= 0) {
+			for (int i = 0; i < comanda.getItensComanda().toArray().length; i++) {
+				valor = (double) (valor + comanda.getItensComanda().get(i).getItem().getPreco())
+						* comanda.getItensComanda().get(i).getQuantidade();
+			}
+		}
+		comanda.setValorTotal(valor);
 	}
 
 	public void calculaValorComissao(Comanda comanda) {
+		double valor = 0;
+		double percentual = 0;
+		if (comandas.size() >= 0) {
+			for (int i = 0; i < comanda.getItensComanda().toArray().length; i++) {
+				switch (comanda.getItensComanda().get(i).getItem().getDescricao()) {
+				case "Cerveja puro malte":
+					percentual = 7.60;
+					break;
+				case "Cerveja puro milho":
+					percentual = 6.50;
+					break;
+				case "Taça de vinho":
+					percentual = 9.00;
+					break;
+				case "Refrigerante cola lata":
+					percentual = 8.00;
+					break;
+				case "Água":
+					percentual = 2.50;
+					break;
+				case "Bolinho de bacalhau":
+					percentual = 9.50;
+					break;
+				case "Porção de batata frita":
+					percentual = 6.50;
+					break;
+				case "Salada verde":
+					percentual = 5.50;
+					break;
+				case "Frango a passarinho":
+					percentual = 7.40;
+					break;
+				case "Sorvete palito":
+					percentual = 3.20;
+					break;
+				default:
+					break;
+				}
 
-		comanda.setValorTotal(0);
+				valor = (double) ((valor + comanda.getItensComanda().get(i).getItem().getPreco())
+						* comanda.getItensComanda().get(i).getQuantidade()) * (percentual / 100);
+			}
+		}
+		comanda.setValorComissao(valor);
 	}
 
 	@SuppressWarnings("unused")
@@ -54,7 +97,7 @@ public class BotecoFacade {
 		int consumo = 0;
 		if (comandas.size() >= 0) {
 			for (int i = 0; i < comandas.toArray().length; i++) {
-				for(int j = 0; j < comandas.get(i).getItensComanda().toArray().length; j++) {
+				for (int j = 0; j < comandas.get(i).getItensComanda().toArray().length; j++) {
 					consumo = consumo + comandas.get(i).getItensComanda().get(j).getQuantidade();
 				}
 			}

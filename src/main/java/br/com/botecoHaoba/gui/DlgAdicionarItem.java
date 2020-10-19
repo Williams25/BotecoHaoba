@@ -9,9 +9,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import br.com.botecoHaoba.model.entidades.Cardapio;
 import br.com.botecoHaoba.model.entidades.ItemComanda;
+
 
 public class DlgAdicionarItem extends JDialog {
 
@@ -112,7 +112,7 @@ public class DlgAdicionarItem extends JDialog {
 
          ItemComanda comanda = new ItemComanda( Integer.parseInt( textQuantidade.getText().trim() ),
                                                 (Cardapio) comboCardapio.getSelectedItem() );
-
+        
          DlgAdicionarItem.this.itemComanda = comanda;
 
          DlgAdicionarItem.this.setVisible( false );
