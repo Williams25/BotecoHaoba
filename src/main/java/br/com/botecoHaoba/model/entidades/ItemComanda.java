@@ -13,11 +13,10 @@ public class ItemComanda {
 
 
    public Integer getQuantidade() {
-
+	   
       return quantidade;
    }
-
-
+   
    public Cardapio getItem() {
 
       return item;

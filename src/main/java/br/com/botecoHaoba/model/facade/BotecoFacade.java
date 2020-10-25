@@ -2,7 +2,9 @@ package br.com.botecoHaoba.model.facade;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import br.com.botecoHaoba.model.entidades.Comanda;
+import br.com.botecoHaoba.model.entidades.ConsumoTotal;
 
 public class BotecoFacade {
 
@@ -29,7 +31,7 @@ public class BotecoFacade {
 		double valor = 0;
 		if (comandas.size() >= 0) {
 			for (int i = 0; i < comanda.getItensComanda().toArray().length; i++) {
-				valor = (double) (valor + comanda.getItensComanda().get(i).getItem().getPreco())
+				valor = valor + (comanda.getItensComanda().get(i).getItem().getPreco())
 						* comanda.getItensComanda().get(i).getQuantidade();
 			}
 		}
@@ -76,8 +78,8 @@ public class BotecoFacade {
 					break;
 				}
 
-				valor = (double) ((valor + comanda.getItensComanda().get(i).getItem().getPreco())
-						* comanda.getItensComanda().get(i).getQuantidade()) * (percentual / 100);
+				valor = valor + (((comanda.getItensComanda().get(i).getItem().getPreco())
+						* comanda.getItensComanda().get(i).getQuantidade()) * (percentual / 100));
 			}
 		}
 		comanda.setValorComissao(valor);
@@ -119,4 +121,50 @@ public class BotecoFacade {
 		return comandas.size();
 	}
 
+	public String valorTotalPorPessoa(Comanda comanda) {
+		double total = 0;
+		total = comanda.getValorTotal() / comanda.getQuantidadePessoasMesa();
+		String resultado = String.format("%.2f", total);
+		return resultado;
+	}
+
+	public String mostraConsumo() {
+		int quantidade = 0;
+		String item = null;
+
+		List<ConsumoTotal> consumo = new ArrayList<ConsumoTotal>();
+
+		for (Comanda comanda : comandas) {
+			boolean c = false;
+			for (int i = 0; i < comanda.getItensComanda().toArray().length; i++) {
+				for (ConsumoTotal consumoTotal : consumo) {
+					if (consumoTotal.getDescricao().equals(comanda.getItensComanda().get(i).getItem().getDescricao())) {
+						consumoTotal.setQuantidade(
+								consumoTotal.getQuantidade() + comanda.getItensComanda().get(i).getQuantidade());
+						c = true;
+					}
+				}
+				if (!c) {
+					consumo.add(new ConsumoTotal(comanda.getItensComanda().get(i).getItem().getDescricao(),
+							comanda.getItensComanda().get(i).getQuantidade(),
+							comanda.getItensComanda().get(i).getItem().getPreco()));
+				}
+			}
+		}
+
+		for (int j = 0; j < consumo.toArray().length; j++) {
+			ConsumoTotal consumoTotal = (ConsumoTotal) consumo.get(j);
+			for (ConsumoTotal consumoTotal2 : consumo) {
+				if (consumoTotal2.getQuantidade() > quantidade) {
+					quantidade = consumoTotal2.getQuantidade();
+					item = consumoTotal2.getDescricao();
+				} else if (consumoTotal2.getQuantidade().equals(consumoTotal.getQuantidade())
+						&& consumoTotal2.getPreco() > consumoTotal.getPreco()) {
+					quantidade = consumoTotal2.getQuantidade();
+					item = consumoTotal2.getDescricao();
+				}
+			}
+		}
+		return item + " " + Integer.toString(quantidade);
+	}
 }

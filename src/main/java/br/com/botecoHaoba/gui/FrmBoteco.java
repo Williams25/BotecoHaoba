@@ -28,6 +28,8 @@ public class FrmBoteco extends JFrame {
 	private final JButton botaoAdicionarComanda = new JButton("Adicionar comanda");
 	private final JButton botaoRemoverComanda = new JButton("Remover comanda");
 	private final JButton botaoAdicionarItem = new JButton("Adicionar item");
+	private final JButton botaoValorTotalPorPessoa = new JButton("Valor por pessoa");
+	private final JButton botaoMaisConsumido = new JButton("Mais consumido");
 
 	public FrmBoteco() {
 
@@ -51,6 +53,8 @@ public class FrmBoteco extends JFrame {
 		add(botaoAdicionarComanda);
 		add(botaoRemoverComanda);
 		add(botaoAdicionarItem);
+		add(botaoValorTotalPorPessoa);
+		add(botaoMaisConsumido);
 
 		atualizaTitulo();
 	}
@@ -69,6 +73,14 @@ public class FrmBoteco extends JFrame {
 		botaoRemoverComanda.setSize(140, 30);
 		botaoRemoverComanda.setLocation(140, 520);
 		botaoRemoverComanda.addActionListener(new ActionRemoverComanda());
+
+		botaoValorTotalPorPessoa.setSize(180, 30);
+		botaoValorTotalPorPessoa.setLocation(280, 520);
+		botaoValorTotalPorPessoa.addActionListener(new ActionValorPorPessoa());
+
+		botaoMaisConsumido.setSize(140, 30);
+		botaoMaisConsumido.setLocation(460, 520);
+		botaoMaisConsumido.addActionListener(new ActionMaisConsumido());
 
 		botaoAdicionarItem.setSize(140, 30);
 		botaoAdicionarItem.setLocation(630, 520);
@@ -112,11 +124,11 @@ public class FrmBoteco extends JFrame {
 
 				try {
 					Comanda comanda = dialog.getComanda();
-					
+
 					if (comanda == null) {
 						return;
 					}
-					
+
 					facade.addComanda(comanda);
 
 					facade.calculaValorTotal(comanda);
@@ -204,4 +216,53 @@ public class FrmBoteco extends JFrame {
 
 	}
 
+	private class ActionValorPorPessoa implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				if (gridMesas.getSelectedRow() == -1) {
+					JOptionPane.showMessageDialog(botaoValorTotalPorPessoa,
+							"Selecione uma mesa para ver o valor total por pessoa!");
+					return;
+				}
+				Comanda comanda = facade.getComandas().get(gridMesas.getSelectedRow());
+
+				JOptionPane.showMessageDialog(botaoValorTotalPorPessoa,
+						"Total da comanda por pessoas R$ " + facade.valorTotalPorPessoa(comanda));
+
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(botaoValorTotalPorPessoa, ex.getLocalizedMessage());
+			}
+		}
+	}
+
+	private class ActionMaisConsumido implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				if (gridMesas.getSelectedRow() == -1) {
+					if (facade.mostraConsumo().toString().equals("null 0")) {
+						JOptionPane.showMessageDialog(botaoValorTotalPorPessoa, "Não contém itens em consumo ");
+						return;
+					}
+					JOptionPane.showMessageDialog(botaoValorTotalPorPessoa,
+							"Item mais consumido " + facade.mostraConsumo());
+					return;
+				}
+
+				if (facade.mostraConsumo().toString().equals("null 0")) {
+					JOptionPane.showMessageDialog(botaoValorTotalPorPessoa, "Não contém itens em consumo ");
+					return;
+				}
+
+				JOptionPane.showMessageDialog(botaoValorTotalPorPessoa,
+						"Item mais consumido " + facade.mostraConsumo());
+
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(botaoValorTotalPorPessoa, ex.getLocalizedMessage());
+			}
+		}
+	}
 }
